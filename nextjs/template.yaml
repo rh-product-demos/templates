@@ -5,7 +5,7 @@ metadata:
   title: Next.js on OpenShift
   description: Bootstraps a Next.js application that can be deployed on OpenShift
 spec:
-  owner: rh-product-demos-platform-engineering
+  owner: rh-product-demos/platform-engineering
   type: template
 
   parameters:
@@ -30,7 +30,7 @@ spec:
         owner:
           title: Owner
           type: string
-          description: Owner of the resulting Component
+          description: GitHub Team Owner of the resulting Component
           ui:field: OwnerPicker
           ui:options:
             allowArbitraryValues: false
@@ -66,11 +66,11 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
-        repoUrl: github.com?repo=${{ parameters.name }}&owner=${{ parameters.owner | parseEntityRef | pick('name') }}
+        repoUrl: github.com?repo=${{ parameters.name }}&owner=rh-product-demos
         defaultBranch: main
         sourcePath: ./source
         collaborators:
-          - team: ${{ parameters.owner | parseEntityRef | pick('name') }}
+          - team: rh-product-demos/${{ parameters.owner | parseEntityRef | pick('name') }}
             access: maintain
 
     - id: generateManifests
@@ -89,9 +89,10 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
-        repoUrl: github.com?repo=${{ parameters.name }}-manifests&owner=${{ parameters.owner | parseEntityRef | pick('name') }}
+        repoUrl: github.com?repo=${{ parameters.name }}-manifests&owner=rh-product-demos
         defaultBranch: main
         sourcePath: ./manifests
+        repoVisibility: public
 
   output:
     links:
