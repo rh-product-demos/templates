@@ -5,7 +5,7 @@ metadata:
   title: Next.js on OpenShift
   description: Bootstraps a Next.js application that can be deployed on OpenShift
 spec:
-  owner: platform-engineering
+  owner: rh-product-demos-platform-engineering
   type: template
 
   parameters:
