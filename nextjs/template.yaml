@@ -5,7 +5,7 @@ metadata:
   title: Next.js on OpenShift
   description: Bootstraps a Next.js application that can be deployed on OpenShift
 spec:
-  owner: rh-product-demos/platform-engineering
+  owner: platform-engineering
   type: template
 
   parameters:
@@ -30,8 +30,13 @@ spec:
         owner:
           title: Owner
           type: string
-          description: GitHub team that owns the repository
-          default: "rh-product-demos/platform-engineering"  # 🔥 FIXED
+          description: Owner of the resulting Component
+          ui:field: OwnerPicker
+          ui:options:
+            allowArbitraryValues: false
+            catalogFilter:
+              kind: Group
+              metadata.annotations.github.com/team-slug: { exists: true }
         system:
           title: System
           type: string
@@ -59,15 +64,15 @@ spec:
       name: Create Source Code Repository
       action: publish:github
       input:
-        repoVisibility: public  # 🔥 EXPLICITLY SET
+        repoVisibility: public
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
-        repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}
+        repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}  # 🔥 Fixed Organization
         defaultBranch: main
         sourcePath: ./source
         collaborators:
-          - team: "rh-product-demos/platform-engineering"
-            access: maintain  # 🔥 FIXED TEAM FORMAT
+          - team: "rh-product-demos/${{ parameters.owner | parseEntityRef | pick('name') }}"  # 🔥 Ensure correct team format
+            access: maintain
 
     - id: generateManifests
       name: Generate GitOps Manifests
@@ -85,10 +90,13 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
-        repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}-manifests
+        repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}-manifests  # 🔥 Fixed Organization
         defaultBranch: main
         sourcePath: ./manifests
-        repoVisibility: public  # 🔥 FIXED
+        repoVisibility: public
+        collaborators:
+          - team: "rh-product-demos/${{ parameters.owner | parseEntityRef | pick('name') }}"  # 🔥 Ensure correct team format
+            access: maintain
 
   output:
     links:
