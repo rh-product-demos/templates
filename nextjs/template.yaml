@@ -5,7 +5,7 @@ metadata:
   title: Next.js on OpenShift
   description: Bootstraps a Next.js application that can be deployed on OpenShift
 spec:
-  owner: platform-engineering
+  owner: rh-product-demos/platform-engineering
   type: template
 
   parameters:
@@ -45,6 +45,7 @@ spec:
             allowArbitraryValues: false
             catalogFilter:
               kind: System
+
   steps:
     - id: generateSource
       name: Generate Next.js Application
@@ -62,12 +63,15 @@ spec:
       name: Create Source Code Repository
       action: publish:github
       input:
-        repoVisibility: public  # 🔥 Fix: Explicitly set to public
+        repoVisibility: public  # 🔥 Ensuring it is publicly accessible
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
         repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}
         defaultBranch: main
         sourcePath: ./source
+        collaborators:
+          - team: "rh-product-demos/platform-engineering"
+            access: maintain  # 🔥 Assigns team maintain access
 
     - id: generateManifests
       name: Generate GitOps Manifests
@@ -88,15 +92,7 @@ spec:
         repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}-manifests
         defaultBranch: main
         sourcePath: ./manifests
-        repoVisibility: public  # 🔥 Fix: Explicitly set
-
-    # This step is optional. If autodiscovery is enabled then it's not necessary
-    # - id: register
-    #   name: Register the Component in the Catalog
-    #   action: catalog:register
-    #   input:
-    #     repoContentsUrl: ${{ steps.publishSource.output.repoContentsUrl }}
-    #     catalogInfoPath: /catalog-info.yaml
+        repoVisibility: public  # 🔥 Explicitly setting it as public
 
   output:
     links:
