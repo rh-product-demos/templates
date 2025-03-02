@@ -5,7 +5,7 @@ metadata:
   title: Next.js on OpenShift
   description: Bootstraps a Next.js application that can be deployed on OpenShift
 spec:
-  owner: rh-product-demos/platform-engineering
+  owner: platform-engineering
   type: template
 
   parameters:
@@ -30,7 +30,7 @@ spec:
         owner:
           title: Owner
           type: string
-          description: GitHub Team Owner of the resulting Component
+          description: Owner of the resulting Component
           ui:field: OwnerPicker
           ui:options:
             allowArbitraryValues: false
@@ -46,7 +46,6 @@ spec:
             allowArbitraryValues: false
             catalogFilter:
               kind: System
-
   steps:
     - id: generateSource
       name: Generate Next.js Application
@@ -64,13 +63,14 @@ spec:
       name: Create Source Code Repository
       action: publish:github
       input:
+        repoVisibility: public
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
         repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}
         defaultBranch: main
         sourcePath: ./source
         collaborators:
-          - team: "rh-product-demos/${{ parameters.owner | parseEntityRef | pick('name') }}"
+          - team: ${{ parameters.owner | parseEntityRef | pick('name') }}
             access: maintain
 
     - id: generateManifests
@@ -92,6 +92,18 @@ spec:
         repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}-manifests
         defaultBranch: main
         sourcePath: ./manifests
+        repoVisibility: public
+        collaborators:
+          - team: "rhdh-demo-gh/${{ parameters.owner | parseEntityRef | pick('name') }}"
+            access: maintain
+
+    # This step is optional. If autodiscovery is enabled then it's not necessary
+    # - id: register
+    #   name: Register the Component in the Catalog
+    #   action: catalog:register
+    #   input:
+    #     repoContentsUrl: ${{ steps.publishSource.output.repoContentsUrl }}
+    #     catalogInfoPath: /catalog-info.yaml
 
   output:
     links:
