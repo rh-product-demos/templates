@@ -6,11 +6,11 @@ metadata:
   annotations:
     backstage.io/kubernetes-id: ${{ values.name }}
     backstage.io/kubernetes-label-selector: 'app.kubernetes.io/name=${{ values.name }}'
-    backstage.io/source-location: url:https://github.com/rh-product-demos/${{ values.name }}
+    backstage.io/source-location: github.com/rh-product-demos/${{ values.name }}
     backstage.io/techdocs-ref: .
-    github.com/project-slug: rh-product-demos/${{ values.name }}
+    github.com/project-slug: url:https://github.com/rh-product-demos/${{ values.name }}
 spec:
   type: website
-  system: ${{ values.system }}
+  system: ${{ values.system | default("default-system") }}
   lifecycle: dev
-  owner: ${{ values.owner }}
+  owner: ${{ values.owner | default("group:default/unknown") }}
