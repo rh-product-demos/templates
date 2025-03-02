@@ -66,11 +66,11 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
-        repoUrl: github.com?repo=${{ parameters.name }}&owner=rh-product-demos
+        repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}
         defaultBranch: main
         sourcePath: ./source
         collaborators:
-          - team: rh-product-demos/${{ parameters.owner | parseEntityRef | pick('name') }}
+          - team: "rh-product-demos/${{ parameters.owner | parseEntityRef | pick('name') }}"
             access: maintain
 
     - id: generateManifests
@@ -89,10 +89,9 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
-        repoUrl: github.com?repo=${{ parameters.name }}-manifests&owner=rh-product-demos
+        repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}-manifests
         defaultBranch: main
         sourcePath: ./manifests
-        repoVisibility: public
 
   output:
     links:
