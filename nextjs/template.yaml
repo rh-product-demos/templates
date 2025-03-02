@@ -35,7 +35,8 @@ spec:
           ui:options:
             allowArbitraryValues: false
             catalogFilter:
-              kind: [Group, User]
+              kind: Group
+              metadata.annotations.github.com/team-slug: { exists: true }
         system:
           title: System
           type: string
@@ -45,6 +46,7 @@ spec:
             allowArbitraryValues: false
             catalogFilter:
               kind: System
+
   steps:
     - id: generateSource
       name: Generate Next.js Application
@@ -64,12 +66,12 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
-        repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}
+        repoUrl: github.com?repo=${{ parameters.name }}&owner=${{ parameters.owner | parseEntityRef | pick('name') }}
         defaultBranch: main
         sourcePath: ./source
         collaborators:
-           - team: "rh-product-demos/platform-engineering"
-             access: maintain
+          - team: ${{ parameters.owner | parseEntityRef | pick('name') }}
+            access: maintain
 
     - id: generateManifests
       name: Generate GitOps Manifests
@@ -87,17 +89,9 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
-        repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}-manifests
+        repoUrl: github.com?repo=${{ parameters.name }}-manifests&owner=${{ parameters.owner | parseEntityRef | pick('name') }}
         defaultBranch: main
         sourcePath: ./manifests
-
-    # This step is optional. If autodiscovery is enabled then it's not necessary
-    # - id: register
-    #   name: Register the Component in the Catalog
-    #   action: catalog:register
-    #   input:
-    #     repoContentsUrl: ${{ steps.publishSource.output.repoContentsUrl }}
-    #     catalogInfoPath: /catalog-info.yaml
 
   output:
     links:
