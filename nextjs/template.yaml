@@ -67,6 +67,9 @@ spec:
         repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}
         defaultBranch: main
         sourcePath: ./source
+        collaborators:
+           - team: "rh-product-demos/platform-engineering"
+             access: maintain
 
     - id: generateManifests
       name: Generate GitOps Manifests
