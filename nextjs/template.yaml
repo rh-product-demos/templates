@@ -35,8 +35,7 @@ spec:
           ui:options:
             allowArbitraryValues: false
             catalogFilter:
-              kind: Group
-              metadata.annotations.github.com/team-slug: { exists: true }
+              kind: [Group, User]
         system:
           title: System
           type: string
@@ -63,15 +62,12 @@ spec:
       name: Create Source Code Repository
       action: publish:github
       input:
-        repoVisibility: public
+        repoVisibility: public  # 🔥 Fix: Explicitly set to public
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
         repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}
         defaultBranch: main
         sourcePath: ./source
-        collaborators:
-          - team: ${{ parameters.owner | parseEntityRef | pick('name') }}
-            access: maintain
 
     - id: generateManifests
       name: Generate GitOps Manifests
@@ -92,10 +88,7 @@ spec:
         repoUrl: github.com?owner=rh-product-demos&repo=${{ parameters.name }}-manifests
         defaultBranch: main
         sourcePath: ./manifests
-        repoVisibility: public
-        collaborators:
-          - team: "rhdh-demo-gh/${{ parameters.owner | parseEntityRef | pick('name') }}"
-            access: maintain
+        repoVisibility: public  # 🔥 Fix: Explicitly set
 
     # This step is optional. If autodiscovery is enabled then it's not necessary
     # - id: register
